@@ -1,0 +1,1 @@
+You will need to create  cdsapirc and place it in the root directory for the data retrieval cells to work.

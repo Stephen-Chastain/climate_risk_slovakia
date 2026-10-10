@@ -1,0 +1,7 @@
+.venv/
+data/
+*.nc
+*.zip
+__pycache__/
+.cdsapirc
+dev/
