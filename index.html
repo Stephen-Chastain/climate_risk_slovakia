@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slovakia Water Stress Indicator</title>
+  <meta name="description" content="A 16-member ensemble indicator of growing-season water stress in Slovakia, 2011–2040, built from Copernicus hydrology projections.">
+  <meta property="og:title" content="Slovakia Water Stress Indicator">
+  <meta property="og:description" content="Ensemble-based growing-season water stress indicator for Slovakia, 2011–2040 (RCP 4.5).">
+  <meta property="og:image" content="figures/season_mean.png">
+  <style>
+    :root {
+      --bg: #fbfaf7;
+      --surface: #ffffff;
+      --text: #1d2125;
+      --muted: #5c646d;
+      --line: #e3e0d8;
+      --accent: #1f6f8b;
+      --accent-soft: #e4f0f4;
+      --warn: #9a5b13;
+      --warn-soft: #fbf0e1;
+      --maxw: 760px;
+      --wide: 1080px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #14171a;
+        --surface: #1c2024;
+        --text: #e6e8ea;
+        --muted: #a0a8b0;
+        --line: #2e3439;
+        --accent: #6cbad6;
+        --accent-soft: #1d3039;
+        --warn: #e0a965;
+        --warn-soft: #33281b;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #14171a;
+      --surface: #1c2024;
+      --text: #e6e8ea;
+      --muted: #a0a8b0;
+      --line: #2e3439;
+      --accent: #6cbad6;
+      --accent-soft: #1d3039;
+      --warn: #e0a965;
+      --warn-soft: #33281b;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    a { color: var(--accent); text-underline-offset: 2px; }
+    a:hover { text-decoration-thickness: 2px; }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 16px; }
+    .wide { max-width: var(--wide); margin: 0 auto; padding: 0 16px; }
+
+    nav.top {
+      border-bottom: 1px solid var(--line);
+      font-size: 0.9rem;
+    }
+    nav.top .wrap { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; padding-bottom: 14px; }
+    nav.top a { text-decoration: none; color: var(--muted); }
+    nav.top a:hover { color: var(--text); }
+
+    header.hero { padding: 56px 0 32px; }
+    .eyebrow {
+      font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); font-weight: 600; margin: 0 0 10px;
+    }
+    h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.01em; }
+    .lede { font-size: 1.15rem; color: var(--muted); margin: 0 0 22px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; }
+    .meta li {
+      font-size: 0.8rem; padding: 3px 10px; border: 1px solid var(--line);
+      border-radius: 999px; color: var(--muted); background: var(--surface);
+    }
+    .buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      display: inline-block; padding: 9px 16px; border-radius: 8px; font-size: 0.95rem;
+      text-decoration: none; border: 1px solid var(--accent); font-weight: 500;
+    }
+    .btn.primary { background: var(--accent); color: var(--bg); }
+    .btn.secondary { color: var(--accent); background: transparent; }
+
+    section { padding: 28px 0; }
+    h2 { font-size: 1.45rem; line-height: 1.25; margin: 0 0 14px; }
+    h3 { font-size: 1.1rem; margin: 22px 0 8px; }
+    p { margin: 0 0 14px; }
+    ul, ol { padding-left: 1.3em; margin: 0 0 14px; }
+    li { margin-bottom: 6px; }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px; margin: 8px 0 6px;
+    }
+    .stat {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+      padding: 16px;
+    }
+    .stat .num { font-size: 1.8rem; font-weight: 650; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .stat .label { font-size: 0.88rem; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+
+    .callout {
+      border-left: 4px solid var(--accent); background: var(--accent-soft);
+      padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 18px 0;
+    }
+    .callout.warn { border-color: var(--warn); background: var(--warn-soft); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    figure { margin: 24px 0; }
+    figure img {
+      display: block; width: 100%; height: auto;
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+    }
+    figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .compare { grid-template-columns: 1fr; } }
+
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li {
+      counter-increment: step; position: relative; padding-left: 44px; margin-bottom: 14px;
+    }
+    .steps li::before {
+      content: counter(step); position: absolute; left: 0; top: 1px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent-soft); color: var(--accent);
+      font-weight: 600; font-size: 0.85rem; display: grid; place-items: center;
+    }
+
+    .table-wrap { overflow-x: auto; margin: 10px 0 16px; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-weight: 600; color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    td.n { text-align: right; }
+
+    code { font-size: 0.88em; background: var(--surface); border: 1px solid var(--line); padding: 1px 5px; border-radius: 4px; }
+
+    footer {
+      border-top: 1px solid var(--line); margin-top: 32px; padding: 26px 0 48px;
+      font-size: 0.85rem; color: var(--muted);
+    }
+    footer p { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <nav class="top">
+    <div class="wrap">
+      <!-- TODO: link back to your portfolio home -->
+      <a href="/">← Stephen Chastain</a>
+      <a href="#data">Data &amp; attribution</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Climate risk · Geospatial analysis</p>
+      <h1>Will Slovakia's growing season get drier?</h1>
+      <p class="lede">
+        A growing-season water stress indicator for Slovakia, built from a 16-member ensemble of
+        Copernicus hydrology projections, with model agreement reported for every map cell.
+      </p>
+      <ul class="meta">
+        <li>Python · xarray · geopandas</li>
+        <li>Copernicus C3S</li>
+        <li>RCP 4.5 · 2011–2040</li>
+        <li>5 km grid · EPSG:3035</li>
+      </ul>
+      <div class="buttons">
+        <a class="btn primary" href="https://github.com/stephen-chastain/climate_risk_slovakia">View the code</a>
+        <a class="btn secondary" href="https://nbviewer.org/github/stephen-chastain/REPO_NAME/blob/main/notebooks/indicator_aridity_2040_rcp45.ipynb">Read the notebook</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== HEADLINE ===================== -->
+    <section>
+      <div class="wrap">
+        <h2>The short answer: not in the near term under a moderate emissions scenario (RCP4.5)</h2>
+        <p>
+          Across 16 model runs, growing-season (April–September) runoff is projected to <strong>increase</strong>
+          over most of Slovakia by 2011–2040, compared with 1971–2000. Evaporative demand relative to rainfall
+          changes only a little, and the models don't agree on its direction.
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <div class="num">+14%</div>
+            <div class="label">typical change in growing-season runoff (ensemble median)</div>
+          </div>
+          <div class="stat">
+            <div class="num">80%</div>
+            <div class="label">of Slovakia where ≥ 2/3 of models agree on the runoff direction</div>
+          </div>
+          <div class="stat">
+            <div class="num">+4%</div>
+            <div class="label">typical change in PET/P (evaporative demand ÷ precipitation)</div>
+          </div>
+          <div class="stat">
+            <div class="num">39%</div>
+            <div class="label">of Slovakia where models agree on the PET/P direction</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== THE STORY ===================== -->
+    <section>
+      <div class="wrap">
+        <h2>Why one model wasn't enough</h2>
+        <p>
+          I first built the pipeline on a single climate-model run. The resulting maps were striking: falling runoff
+          and a sharp rise in May evaporative demand. When I expanded to the full ensemble, that run turned
+          out to be the <strong>driest of all 16</strong>. The ensemble as a whole points the opposite way
+          for runoff.
+        </p>
+        <div class="callout">
+          <p>
+            For near-term projections, differences between climate models are larger than the climate signal
+            itself. Reporting how far the models agree matters as much as the median map.
+          </p>
+        </div>
+      </div>
+
+      <div class="wide">
+        <div class="compare">
+          <figure>
+            <img src="figures/gs_mean_2011-2040.png" alt="Growing-season change from the single original model run" loading="lazy">
+            <figcaption>Single model run (EC-EARTH → CCLM4-8-17 → E-HYPEgrid).</figcaption>
+          </figure>
+          <figure>
+            <img src="figures/gs_median_ensemble_2011-2040.png" alt="Growing-season ensemble median change with stippling where models disagree" loading="lazy">
+            <figcaption>Ensemble median of 16 members. Dots mark cells where fewer than 2/3 of models agree on the direction.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FIGURES ===================== -->
+    <section>
+      <div class="wrap">
+        <h2>Results</h2>
+        <h3>Month by month</h3>
+      </div>
+      <div class="wide">
+        <figure>
+          <img src="figures/monthly_rel_change_2011-2040_ensemble.png" alt="Monthly ensemble median change in runoff and PET/P, April to September" loading="lazy">
+          <figcaption>
+            Ensemble median change in runoff (top) and PET/P (bottom) for each growing-season month,
+            2011–2040 vs 1971–2000. Blue = wetter, red = drier.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="wrap">
+        <h3>The whole growing season</h3>
+      </div>
+      <div class="wide">
+        <figure>
+          <img src="figures/season_mean.png" alt="Growing-season ensemble median runoff loss and PET/P increase" loading="lazy">
+          <figcaption>
+            April–September ensemble median, with stippling where models disagree on the direction of change.
+            Runoff is shown as <em>loss</em>, so negative values (blue) mean more runoff.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="wrap">
+        <h3>Indicator classes</h3>
+        <p>
+          Each metric is classified from very low (1) to very high (5) water stress. The two classes are then
+          combined in two ways: their average, and the worse of the two.
+        </p>
+      </div>
+      <div class="wide">
+        <figure>
+          <img src="figures/indicator_classes.png" alt="Indicator class maps for runoff loss, PET/P increase, the average and worst-of-two" loading="lazy">
+          <figcaption>
+            About 95% of Slovakia is "very low" on runoff alone. On PET/P, 73% is "low", 10% "moderate" and
+            under 1% "high".
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="wrap">
+        <!-- OPTIONAL: summary table. Values from the notebook's #14 output. -->
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Class</th><th class="n">Runoff: % of area</th><th class="n">PET/P: % of area</th><th class="n">PET/P: class agreement</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1 very low</td><td class="n">94.8</td><td class="n">16.1</td><td class="n">59%</td></tr>
+              <tr><td>2 low</td><td class="n">5.2</td><td class="n">73.1</td><td class="n">29%</td></tr>
+              <tr><td>3 moderate</td><td class="n">0.0</td><td class="n">9.9</td><td class="n">25%</td></tr>
+              <tr><td>4 high</td><td class="n">0.0</td><td class="n">0.9</td><td class="n">31%</td></tr>
+              <tr><td>5 very high</td><td class="n">0.0</td><td class="n">0.0</td><td class="n">–</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>Class agreement</strong> is the share of models that would put a cell in the same class as the
+          ensemble median. For PET/P it is typically only about a third, so the classes are indicative rather than precise.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== METHOD ===================== -->
+    <section>
+      <div class="wrap">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li><strong>Download an ensemble.</strong> 8 EURO-CORDEX climate simulations, each driving 2 hydrological models (E-HYPEgrid and VIC-WUR), from the Copernicus Climate Data Store: 16 members on a 5 km grid.</li>
+          <li><strong>Validate.</strong> Check that every file shares the same grid, month order and units before stacking them.</li>
+          <li><strong>Clip to Slovakia.</strong> Reproject to an equal-area grid (EPSG:3035) and mask to the national boundary.</li>
+          <li><strong>Quality-check extremes.</strong> Flag implausibly large percentage changes, which come from tiny baselines, and test whether they affect the results. They don't.</li>
+          <li><strong>Summarise the ensemble.</strong> Take the median of the 16 members, and record how many agree on the direction of change.</li>
+          <li><strong>Classify and report confidence.</strong> Classify into five classes, with robustness and class agreement for every cell.</li>
+          <li><strong>Export.</strong> Write results to NetCDF and CSV in a format designed for comparing emissions scenarios.</li>
+        </ol>
+
+        <h3>The two metrics</h3>
+        <ul>
+          <li><strong>Runoff:</strong> water reaching streams and rivers, a proxy for water availability. Less runoff = drier.</li>
+          <li><strong>PET/P:</strong> potential evapotranspiration divided by precipitation (the inverse of UNEP's aridity index). Higher = drier.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== LIMITATIONS ===================== -->
+    <section>
+      <div class="wrap">
+        <h2>Limitations</h2>
+        <div class="callout warn">
+          <p>This is a demonstration of method, not a decision-ready risk product.</p>
+        </div>
+        <ul>
+          <li><strong>Relative, not absolute.</strong> A 10% change can be large or small depending on the baseline, and a "low" class can still be a dry place today.</li>
+          <li><strong>Drying only.</strong> The classes don't distinguish wetter conditions from no change.</li>
+          <li><strong>30-year averages</strong> hide individual drought years, which matter most for farming.</li>
+          <li><strong>Hazard, not risk.</strong> There is no exposure layer (which crops grow where) or vulnerability layer yet.</li>
+          <li><strong>Scope.</strong> One scenario (RCP 4.5), one period, models weighted equally although several share a global model.</li>
+        </ul>
+
+        <h3>Next steps</h3>
+        <ul>
+          <li>Compare with RCP 8.5 and later periods (2041–2070)</li>
+          <li>A two-directional indicator that also classifies wetter conditions</li>
+          <li>An agricultural exposure layer</li>
+          <li>A catchment-level version</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== ATTRIBUTION (required) ===================== -->
+  <footer id="data">
+    <div class="wrap">
+      <p>
+        <strong>Data:</strong> Copernicus Climate Change Service, <em>Hydrology-related climate impact indicators from 1970 to 2100
+        derived from bias adjusted European climate projections</em>, produced by SMHI.
+        <a href="https://doi.org/10.24381/cds.73237ad6">doi:10.24381/cds.73237ad6</a>, CC-BY 4.0.
+      </p>
+      <p>
+        Contains modified Copernicus Climate Change Service information (2026). Neither the European Commission nor ECMWF
+        is responsible for any use that may be made of the Copernicus information or data it contains.
+      </p>
+      <p>© EuroGeographics for the administrative boundaries (Eurostat GISCO, Countries 2020, 1:1 million).</p>
+      <!-- TODO: your name / contact links -->
+      <p>Analysis by Stephen Chastain · <a href="https://github.com/stephen-chastain">GitHub</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
