@@ -1,5 +1,5 @@
 .venv/
-data/
+data/*
 *.nc
 *.zip
 __pycache__/
